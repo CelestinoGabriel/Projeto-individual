@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/cadastro.css">
+    <title>Formulário</title>
+</head>
+
+<body>
+
+    <header>
+       
+        <nav>
+            <a href="index.html">
+                <img style="height: 57px;width: 50px; margin-left: 50%;" src="">
+                </a>
+        
+                <ul>
+                    <li class="agora"> <a href="./index.html">Inicio</a></li>
+                    <li> <a href="./sobre.html">Sobre</a></li>
+                    <li> <a href="./login.html">Login</a></li>
+                    <li> <a href="./cadastro.html">Cadastrar</a></li>
+                </ul>
+                 
+        </nav>
+        </header>
+
+    <div class="container">
+        <div class="form-image">
+            <img src="./assets/rainbow-six-siege-logo-logo-png-transparent.png" alt="" style="color:#FFF;">
+        </div>
+        <div class="form">
+            <form action="#">
+                <div class="form-header">
+                    <div class="title">
+                        <h1>Cadastre-se</h1>
+                    </div>
+                    <div class="login-button">
+                        <button><a href="#">Entrar</a></button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-box">
+                        <label for="primeironome_input">Primeiro Nome</label>
+                        <input id="primeironome_input" type="text" name="primeironome_input" placeholder="Digite seu primeiro nome" required>
+                    </div>
+
+                    <div class="input-box">
+                        <label for="sobrenome_input">Sobrenome</label>
+                        <input id="sobrenome_input" type="text" name="sobrenome_input" placeholder="Digite seu sobrenome" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="email_input">E-mail</label>
+                        <input id="email_input" type="email_input" name="email_input" placeholder="Digite seu e-mail" required>
+                    </div>
+
+                    <div class="input-box">
+                        <label for="numero_input">Celular</label>
+                        <input id="numero_input" type="tel" name="numero_input" placeholder="(xx) xxxx-xxxx" required>
+                    </div>
+
+                    <div class="input-box">
+                        <label for="senha_input">Senha</label>
+                        <input id="senha_input" type="senha_input" name="senha_input" placeholder="Digite sua senha" required>
+                    </div>
+
+
+                    <div class="input-box">
+                        <label for="confirmarsenha_input">Confirme sua Senha</label>
+                        <input id="confirmarsenha_input" type="password" name="confirmarsenha_input" placeholder="Digite sua senha novamente" required>
+                    </div>
+
+                </div>
+                <div class="continue-button">
+                    <button onclick="cadastrar()">Continuar</button> 
+                </div>
+            </form>
+            <div class="banner " style="display:none">
+                <div class="alerta_erro">
+                    <div class="card_erro" id="cardErro">
+                        <span id="mensagem_erro" ></span>
+                    </div>
+                </div>
+        </div>
+        <div id="div_aguardar" class="loading-div" style="display:none"=>
+            <img src="./assets/circle-loading.gif" id="loading-gif">
+        </div>
+
+        <div id="div_erros_login">
+
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script>
+    
+    function cadastrar() {
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        var primeironomeVar = primeironome_input.value;
+        var sobrenomeVar = sobrenome_input.value;
+        var numeroVar = numero_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmarSenhaVar = confirmarsenha_input.value;
+
+        if (primeironomeVar == "" || emailVar == "" || senhaVar == "" || confirmarSenhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+
+        // Enviando o valor da nova input
+        fetch("/usuarios/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                primeironomeServer: primeironomeVar,
+                sobrenomeServer: sobrenomeVar,
+                numeroServer: numeroVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                cardErro.style.display = "block";
+
+                mensagem_erro.innerHTML = "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, "2000")
+                
+                limparFormulario();
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+
+        return false;
+    }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+
+
+</script>
